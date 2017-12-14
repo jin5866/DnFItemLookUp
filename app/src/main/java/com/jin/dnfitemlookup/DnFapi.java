@@ -1,3 +1,7 @@
+package com.jin.dnfitemlookup;
+
+import android.app.Activity;
+import android.content.res.Resources;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +15,7 @@ import java.net.URLEncoder;
  * Created by SSA on 2017-12-14.
  */
 
-public class DnFapi {
+public class DnFapi extends Activity {
 
     String apiURL = "https://api.neople.co.kr";
     String apiKey = "5j7OCSLo8bXCI2p44DKIeQhowxOpASWk";
@@ -40,11 +44,18 @@ public class DnFapi {
 
     }
 
-    public void SetCharName(String name)
+    public void setCharName(String name)
     {
-        this.characterName = name;
+        this.characterName = encodeURIComponent(name);
     }
-
+    public void setServerName(int i){
+        Resources res = getResources();
+        serverName = res.getStringArray(R.array.server_en)[i];
+        return;
+    }public void setServerName(String i){
+        serverName = i;
+        return;
+    }
 
     public static String encodeURIComponent(String component)   {
         String result = null;
@@ -59,9 +70,10 @@ public class DnFapi {
     }
 
 
-    String GetSearchCharUrl()
+    String getSearchCharUrl()
     {
-        return encodeURIComponent(String.format(searchCharFormat,serverName,characterName,apiKey));
+        return apiURL+String.format(searchCharFormat,serverName,characterName,apiKey);
+        //return encodeURIComponent(apiURL+String.format(searchCharFormat,serverName,characterName,apiKey));
     }
 
     String getHttpHTML(String urlToRead) {
@@ -87,5 +99,8 @@ public class DnFapi {
         return result;
     }
 
-
+    public String getSearchCharJson()
+    {
+        return getHttpHTML(getSearchCharUrl());
+    }
 }

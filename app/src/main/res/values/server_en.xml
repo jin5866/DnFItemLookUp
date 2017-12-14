@@ -1,3 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="server_en">
+        <item>anton</item>
+        <item>bakal</item>
+        <item>cain</item>
+        <item>casillas</item>
+        <item>diregie</item>
+        <item>hillder</item>
+        <item>prey</item>
+        <item>siroco</item>
+    </string-array>
 </resources>
