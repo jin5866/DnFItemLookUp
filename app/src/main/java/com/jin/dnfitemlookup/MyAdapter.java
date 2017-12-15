@@ -61,4 +61,12 @@ public class MyAdapter extends BaseAdapter {
     public void addItem(int icon, String name, String job, int level) {
         itemList.add(new CharInfoItem(icon,name,job,level));
     }
+
+    public  void addItem(ArrayList<CharInfoItem> list)
+    {
+        for(int i =0;i<list.size();i++)
+        {
+            itemList.add(list.get(i));
+        }
+    }
 }

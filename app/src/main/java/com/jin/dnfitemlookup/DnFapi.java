@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
-
+import java.util.ArrayList;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
@@ -136,5 +140,43 @@ public class DnFapi extends Activity {
     public String getSearchCharJson()
     {
         return getHttpHTML(getSearchCharUrl());
+    }
+    public ArrayList<CharInfoItem> getSearchCharList()
+    {
+        return getSearchCharList(getSearchCharJson());
+    }
+    public ArrayList<CharInfoItem> getSearchCharList(String json)
+    {
+        ArrayList<CharInfoItem> result = new ArrayList<CharInfoItem>();
+
+        try {
+            JSONObject jo = new JSONObject(json);
+            JSONArray jsonArray = jo.getJSONArray("rows");
+            // = new JSONArray(json);
+
+            for(int i=0;i<jsonArray.length();i++)
+            {
+                Log.e("error",""+i);
+
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+
+                String name = jsonObject.getString("characterName" );
+                String id =  jsonObject.getString("characterId");
+                String job = jsonObject.getString("jobName");
+                int level = jsonObject.getInt("level");
+
+
+                result.add(new CharInfoItem(R.drawable.ic_account_circle,name,job,level,id));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("error",e.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("error",e.toString());
+        }
+
+        return result;
     }
 }

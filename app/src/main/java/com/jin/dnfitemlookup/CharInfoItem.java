@@ -22,6 +22,14 @@ public class CharInfoItem {
         this.job = job;
         this.level = level;
     }
+    CharInfoItem(int icon,String name,String job,int level,String id)
+    {
+        this.icon = icon;
+        this.name = name;
+        this.job = job;
+        this.level = level;
+        this.id = id;
+    }
 
     int getIcon(){return icon;}
     String getName(){return name;}
