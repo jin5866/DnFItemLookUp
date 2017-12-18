@@ -54,6 +54,16 @@ public class EquipmentAdapter extends BaseAdapter {
 
         iconImageView.setImageResource(equipment.getIcon());
         itemName.setText(equipment.getItemName());
+        //폰트 크기 조절
+        if(itemName.getText().length()>28)
+        {
+            itemName.setTextSize(14);
+        }
+        else if(itemName.getText().length()>16)
+        {
+            itemName.setTextSize(20);
+        }
+
         itemInfo.setText(equipment.getItemInfo());
 
         Log.e("error",equipment.getItemInfo());
