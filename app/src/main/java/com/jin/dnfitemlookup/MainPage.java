@@ -167,7 +167,7 @@ public class MainPage extends AppCompatActivity {
 
         // AlertDialog 셋팅
         alertDialogBuilder
-                .setMessage("네오플api를 사용하여 제작되었습니다.")
+                .setMessage("네오플api를 사용하여 제작되었습니다.\n확인을 누를시 네오플 사이트로 이동합니다.")
                 .setCancelable(false)
                 .setPositiveButton("확인",
                         new DialogInterface.OnClickListener() {
