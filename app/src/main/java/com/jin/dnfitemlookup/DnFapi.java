@@ -35,8 +35,11 @@ public class DnFapi extends Activity {
     String characterName = "";
     String characterId = "";
 
+    //캐릭터 검색
     String searchCharFormat = "/df/servers/%s/characters?characterName=%s&limit=50&wordType=%s&apikey=%s";//서버,닉네임,검색조건,api키
 
+    //캐릭터 장비 검색
+    String searchCharEquipment = "/df/servers/%s/characters/%s/equip/equipment?apikey=%s";//서버,ID,api키
 
     public static DnFapi instance = null;
 
@@ -76,6 +79,10 @@ public class DnFapi extends Activity {
             searchOption = 0;
         }
     }
+    public void setCharacterId(String id)
+    {
+        characterId = id;
+    }
 
     public static String encodeURIComponent(String component)   {
         String result = null;
@@ -90,9 +97,7 @@ public class DnFapi extends Activity {
     }
 
 
-    String getSearchCharUrl() {
-        return apiURL+String.format(searchCharFormat,serverName,characterName,wordTypes[searchOption],apiKey);
-    }
+    //주소로 페이지 소스 파싱
     String getHttpHTML(String urlToRead) {
         String result = "";
 
@@ -137,16 +142,23 @@ public class DnFapi extends Activity {
         return result;
 
     }
+
+
+    /*
+     * 이름으로 캐릭터 검색하는 기능
+     *
+     */
+    String getSearchCharUrl() {
+        return apiURL+String.format(searchCharFormat,serverName,characterName,wordTypes[searchOption],apiKey);
+    }
     public String getSearchCharJson()
     {
         return getHttpHTML(getSearchCharUrl());
     }
-    public ArrayList<CharInfoItem> getSearchCharList()
-    {
+    public ArrayList<CharInfoItem> getSearchCharList() {
         return getSearchCharList(getSearchCharJson());
     }
-    public ArrayList<CharInfoItem> getSearchCharList(String json)
-    {
+    public ArrayList<CharInfoItem> getSearchCharList(String json) {
         ArrayList<CharInfoItem> result = new ArrayList<CharInfoItem>();
 
         try {
@@ -156,7 +168,7 @@ public class DnFapi extends Activity {
 
             for(int i=0;i<jsonArray.length();i++)
             {
-                Log.e("error",""+i);
+                //Log.e("error",""+i);
 
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -171,12 +183,70 @@ public class DnFapi extends Activity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e("error",e.toString());
+            //Log.e("error",e.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("error",e.toString());
+            //Log.e("error",e.toString());
         }
 
         return result;
     }
+
+
+    /*
+     * 캐릭터 ID 로 장착 장비 검색
+     *
+     */
+    String getSearchCharEquipmentURL(){
+        return apiURL+String.format(searchCharEquipment,serverName,characterId,apiKey);
+    }
+    public String getSearchCharEquipmentJson(){
+        return getHttpHTML(getSearchCharEquipmentURL());
+    }
+    public String getSearchCharEquipmentJson(String id){
+        setCharacterId(id);
+        return getSearchCharEquipmentJson();
+    }
+    public ArrayList<Equipment> getCharEquipmentList(){
+        return getCharEquipmentList(getSearchCharEquipmentJson());
+    }
+    public ArrayList<Equipment> getCharEquipmentList(String json){
+        ArrayList<Equipment> result = new ArrayList<Equipment>();
+
+        try {
+            JSONObject jo = new JSONObject(json);
+            JSONArray jsonArray = jo.getJSONArray("equipment");
+            // = new JSONArray(json);
+
+            for(int i=0;i<jsonArray.length();i++)
+            {
+                //Log.e("error",""+i);
+
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+
+                String slotId = jsonObject.getString("slotId");
+                String itemId = jsonObject.getString("itemId");
+                String itemName = jsonObject.getString("itemName");
+                String itemRarity = jsonObject.getString("itemRarity");
+                String setItemName = jsonObject.getString("setItemName");
+                int reinforce = jsonObject.getInt("reinforce");
+                int refine = jsonObject.getInt("refine");
+                String amplificationName = jsonObject.getString("amplificationName");
+
+
+                result.add(new Equipment(slotId,itemId,itemName,itemRarity,setItemName,reinforce,refine,amplificationName));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //Log.e("error",e.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Log.e("error",e.toString());
+        }
+
+        return result;
+    }
+
+
 }

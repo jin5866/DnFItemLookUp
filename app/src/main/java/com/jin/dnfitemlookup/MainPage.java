@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,8 @@ public class MainPage extends AppCompatActivity {
     String charName;
 
     String[] wordTypes = {"단어 일치","단어 포함"};
+
+    String neopleUrl = "http://developers.neople.co.kr";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,7 @@ public class MainPage extends AppCompatActivity {
 
 
 
+    //조회하기 버튼
     public void onClickLookUp(View v) {
 
         //권한요구
@@ -101,19 +105,94 @@ public class MainPage extends AppCompatActivity {
 
         //캐릭터 이름
         charName = e.getText().toString();
+        if(charName.length()<=0) {
+            //알람 띄우기
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // 제목셋팅
+            alertDialogBuilder.setTitle("짧아");
+
+            // AlertDialog 셋팅
+            alertDialogBuilder
+                    .setMessage("닉네임이 짧습니다.")
+                    .setCancelable(false)
+                    .setPositiveButton("확인",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(
+                                        DialogInterface dialog, int id) {
+                                    //취소
+                                    dialog.cancel();
+                                }
+                            })
+                    .setNegativeButton("취소",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(
+                                        DialogInterface dialog, int id) {
+                                    // 다이얼로그를 취소한다
+                                    dialog.cancel();
+                                }
+                            });
+
+            // 다이얼로그 생성
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // 다이얼로그 보여주기
+            alertDialog.show();
+
+            //다음으로 넘어가지 않기
+            return;
+        }
+
         DnFapi.GetInstance().setCharName(charName);
+
         //서버이름
         Resources res = getResources();
         String server = res.getStringArray(R.array.server_en)[serverPos];
         DnFapi.GetInstance().setServerName(server);
 
-        //
+        //검색 옵션
         DnFapi.GetInstance().setSearchOption(searchOption.isChecked());
 
         Intent intent = new Intent(this,CharacterList.class);
         startActivity(intent);
     }
 
+    //네오플 버튼
+    public void onClickNeople(View v) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // 제목셋팅
+        alertDialogBuilder.setTitle("네오플");
+
+        // AlertDialog 셋팅
+        alertDialogBuilder
+                .setMessage("네오플api를 사용하여 제작되었습니다.")
+                .setCancelable(false)
+                .setPositiveButton("확인",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(neopleUrl));
+                                startActivity(intent);
+                            }
+                        })
+                .setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                // 다이얼로그를 취소한다
+                                dialog.cancel();
+                            }
+                        });
+
+        // 다이얼로그 생성
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // 다이얼로그 보여주기
+        alertDialog.show();
+
+    }
     private void requestNetworkPermission() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {

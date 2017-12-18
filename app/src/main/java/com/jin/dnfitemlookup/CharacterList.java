@@ -1,10 +1,11 @@
 package com.jin.dnfitemlookup;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -42,8 +43,10 @@ public class CharacterList extends Activity {
 
         new Thread() {
             public void run(){
+                //검색한 캐릭터 JSON
                 String searchCharJson = DnFapi.GetInstance().getSearchCharJson();
 
+                //정보를 헨들러에 넘겨줌
                 Bundle bun = new Bundle();
                 bun.putString("JSON",searchCharJson);
                 Message msg = handler.obtainMessage();
@@ -54,6 +57,7 @@ public class CharacterList extends Activity {
 
     }
 
+    @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             Bundle bun = msg.getData();
@@ -63,13 +67,17 @@ public class CharacterList extends Activity {
 
             adapter.addItem(itemList);
 
-            Log.e("error","aaaaaa");
+            //Log.e("error","aaaaaa");
 
             //캐릭터 정보 눌렀을떄
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                    CharInfoItem item =  (CharInfoItem) adapterView.getAdapter().getItem(position);
+                    DnFapi.GetInstance().setCharacterId(item.id );
 
+                    Intent intent = new Intent(CharacterList.this,CharEquipmentLookUp.class);
+                    startActivity(intent);
                 }
             });
 
