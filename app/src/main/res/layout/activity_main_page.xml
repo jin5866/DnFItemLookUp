@@ -4,7 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context="com.jin.dnfitemlookup.MainPage">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id">
+
+        </com.google.android.gms.ads.AdView>
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/button"
@@ -62,11 +81,11 @@
         android:background="@drawable/powered_by_neople"
         android:onClick="onClickNeople"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.965"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/powered_by_neople" />
 
 </android.support.constraint.ConstraintLayout>

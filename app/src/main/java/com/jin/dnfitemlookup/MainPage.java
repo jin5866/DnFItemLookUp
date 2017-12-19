@@ -19,6 +19,10 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 public class MainPage extends AppCompatActivity {
 
     final int MY_PERMISSIONS_REQUEST_INTERNET = 1;
@@ -39,7 +43,20 @@ public class MainPage extends AppCompatActivity {
         setContentView(R.layout.activity_main_page);
 
 
+        //네트워크 권한
+        requestNetworkPermission();
 
+        //인터넷 권한
+        requestInternetPermission();
+
+        //광고
+        MobileAds.initialize(getApplicationContext(),getResources().getString(R.string.app_ad_id));
+
+        AdView adView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice(getResources().getString(R.string.test_device_id)) //배포시 주석 //테스트 광고
+                .build();
+        adView.loadAd(adRequest);
 
         //스피너
         Spinner s = (Spinner) findViewById(R.id.serverName);
@@ -95,13 +112,6 @@ public class MainPage extends AppCompatActivity {
 
     //조회하기 버튼
     public void onClickLookUp(View v) {
-
-        //권한요구
-        //권한요구
-        //권한요구
-        //권한요구
-        //권한요구
-        requestNetworkPermission();
 
         //캐릭터 이름
         charName = e.getText().toString();
@@ -194,6 +204,71 @@ public class MainPage extends AppCompatActivity {
 
     }
     private void requestNetworkPermission() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            int permissionResult = checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE);
+
+            if (permissionResult == PackageManager.PERMISSION_DENIED)
+            {
+                //권한 없을떄
+
+                if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_NETWORK_STATE))
+                {
+                    //거부이력 있을때
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(MainPage.this);
+
+                    dialog.setTitle("권한이 필요합니다.")
+
+                            .setMessage("이 기능을 사용하기 위해서는 단말기의 \"네트워크\" 권한이 필요합니다. 계속하시겠습니까?")
+
+                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
+
+                                @Override
+
+                                public void onClick(DialogInterface dialog, int which) {
+
+
+
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                                        requestPermissions(new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, 1000);
+
+                                    }
+
+
+
+                                }
+
+                            })
+
+                            .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+
+                                @Override
+
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Toast.makeText(MainPage.this, "기능을 취소했습니다.", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }).create().show();
+
+
+                }
+                else
+                {
+                    //최초 요청
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, MY_PERMISSIONS_REQUEST_INTERNET);
+                }
+            }
+            else
+            {
+                //권한 있을떄
+                //Log.e("a","aaa");
+            }
+        }
+    }
+
+    private void requestInternetPermission() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             int permissionResult = checkSelfPermission(Manifest.permission.INTERNET);
